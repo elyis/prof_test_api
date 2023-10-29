@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using prof_tester_api.src.Infrastructure.Data;
 
@@ -10,9 +11,11 @@ using prof_tester_api.src.Infrastructure.Data;
 namespace prof_tester_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231029082823_init7")]
+    partial class init7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.11");
@@ -139,30 +142,6 @@ namespace prof_tester_api.Migrations
                     b.ToTable("Tests");
                 });
 
-            modelBuilder.Entity("prof_tester_api.src.Domain.Models.TestResultModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("RightCountAnswers")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<Guid>("TestId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TestId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("TestResults");
-                });
-
             modelBuilder.Entity("prof_tester_api.src.Domain.Models.UserModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -275,25 +254,6 @@ namespace prof_tester_api.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("prof_tester_api.src.Domain.Models.TestResultModel", b =>
-                {
-                    b.HasOne("prof_tester_api.src.Domain.Models.TestModel", "Test")
-                        .WithMany("TestResults")
-                        .HasForeignKey("TestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("prof_tester_api.src.Domain.Models.UserModel", "User")
-                        .WithMany("TestResults")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Test");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("prof_tester_api.src.Domain.Models.UserModel", b =>
                 {
                     b.HasOne("prof_tester_api.src.Domain.Models.DepartmentModel", "Department")
@@ -333,13 +293,6 @@ namespace prof_tester_api.Migrations
             modelBuilder.Entity("prof_tester_api.src.Domain.Models.TestModel", b =>
                 {
                     b.Navigation("Questions");
-
-                    b.Navigation("TestResults");
-                });
-
-            modelBuilder.Entity("prof_tester_api.src.Domain.Models.UserModel", b =>
-                {
-                    b.Navigation("TestResults");
                 });
 #pragma warning restore 612, 618
         }

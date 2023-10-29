@@ -15,13 +15,11 @@ namespace prof_tester_api.src.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<UserModel?> AddAsync(SignUpBody body, string role, Guid adminId)
+        public async Task<UserModel?> AddAsync(SignUpBody body, string role, OrganizationModel organization, DepartmentModel? department)
         {
             var oldUser = await GetAsync(body.Phone);
             if (oldUser != null)
                 return null;
-
-            var admin = await GetWithOrganizationAsync(adminId);
 
 
             var newUser = new UserModel
@@ -29,13 +27,27 @@ namespace prof_tester_api.src.Infrastructure.Repository
                 Phone = body.Phone,
                 Password = body.Password,
                 RoleName = role,
-                Organization = admin.Organization
+                Department = department,
+                Fullname = body.Fullname,
+                Organization = organization
             };
 
             var result = await _context.Users.AddAsync(newUser);
             await _context.SaveChangesAsync();
             return result?.Entity;
         }
+
+        public async Task<IEnumerable<UserModel>> GetAllByRoleWithTestResults(string rolename, Guid organizationId)
+            => await _context.Users.Include(e => e.TestResults)
+            .Where(e => e.OrganizationId == organizationId && e.RoleName == rolename)
+                .ToListAsync();
+
+        public async Task<IEnumerable<UserModel>> GetAllWithTestResults(Guid organizationId, Guid departmentId)
+            => await _context.Users
+                .Include(e => e.TestResults)
+                    .ThenInclude(e => e.Test)
+                .Where(e => e.OrganizationId == organizationId && e.DepartmentId == departmentId)
+                .ToListAsync();
 
         public async Task<UserModel?> GetAsync(Guid id)
             => await _context.Users
@@ -45,13 +57,27 @@ namespace prof_tester_api.src.Infrastructure.Repository
             => await _context.Users
                 .FirstOrDefaultAsync(e => e.Phone == phone);
 
+        public async Task<UserModel?> GetAsyncWithDepartment(Guid id)
+             => await _context.Users
+                .Include(e => e.Department)
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+        public async Task<UserModel?> GetAsyncWithTestResults(Guid id)
+            => await _context.Users
+                .Include(e => e.TestResults)
+                    .ThenInclude(e => e.Test)
+                        .ThenInclude(e => e.Questions)
+                .FirstOrDefaultAsync(e => e.Id == id);
+
         public async Task<UserModel?> GetByTokenAsync(string refreshToken)
             => await _context.Users
                 .FirstOrDefaultAsync(e => e.Token == refreshToken);
 
         public async Task<UserModel?> GetWithOrganizationAsync(Guid id)
-            => await _context.Users.Include(e => e.Organization)
-                .FirstOrDefaultAsync(e => e.Id == id);
+            => await _context.Users
+            .Include(e => e.Organization)
+            .Include(e => e.Department)
+            .FirstOrDefaultAsync(e => e.Id == id);
 
         public async Task<UserModel?> UpdateProfileAsync(Guid userId, UpdateProfileBody body)
         {

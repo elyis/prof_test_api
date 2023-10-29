@@ -2,6 +2,7 @@ namespace prof_tester_api
 {
     public static class Constants
     {
+        //Менять этот url в формате: "http://localhost:8080"
         public static readonly string serverUrl = Environment.GetEnvironmentVariable("ASPNETCORE_URLS").Split(";").First();
 
         public static readonly string localPathToStorages = @"Resources/";

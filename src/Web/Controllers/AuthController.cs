@@ -27,11 +27,11 @@ namespace prof_tester_api.src.Web.Controllers
 
 
         [SwaggerOperation("Регистрация сотрудника")]
-        [SwaggerResponse(200, "Успешно создан", Type = typeof(TokenPair))]
+        [SwaggerResponse(200, "Успешно создан")]
         [SwaggerResponse(400)]
         [SwaggerResponse(409, "Номер уже привязан")]
 
-        [HttpPost("signup/employe"), Authorize("Admin")]
+        [HttpPost("signup/employe"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> SignUpEmployeAsync(
             [FromHeader(Name = "Authorization")] string token,
             SignUpBody signUpBody)
@@ -39,13 +39,13 @@ namespace prof_tester_api.src.Web.Controllers
 
             var tokenPayload = _jwtService.GetTokenPayload(token);
             string role = Enum.GetName(signUpBody.Role)!;
-            var result = await _authService.SignUp(signUpBody, role, tokenPayload.OrganizationId);
+            var result = await _authService.SignUp(signUpBody, role, tokenPayload.UserId);
             return result;
         }
 
 
         [SwaggerOperation("Авторизация")]
-        [SwaggerResponse(200, "Успешно", Type = typeof(TokenPair))]
+        [SwaggerResponse(200, "Успешно", Type = typeof(TokenPairInfo))]
         [SwaggerResponse(400, "Пароли не совпадают")]
         [SwaggerResponse(404, "Email не зарегистрирован")]
 
@@ -57,7 +57,7 @@ namespace prof_tester_api.src.Web.Controllers
         }
 
         [SwaggerOperation("Восстановление токена")]
-        [SwaggerResponse(200, "Успешно создан", Type = typeof(TokenPair))]
+        [SwaggerResponse(200, "Успешно создан", Type = typeof(TokenPairInfo))]
         [SwaggerResponse(404, "Токен не используется")]
 
         [HttpPost("token")]

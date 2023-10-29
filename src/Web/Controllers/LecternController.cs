@@ -36,7 +36,7 @@ namespace prof_tester_api.src.Web.Controllers
             var tokenPayload = _jwtService.GetTokenPayload(token);
 
             var lecterns = await _lecternRepository.GetAllAsync(tokenPayload.OrganizationId);
-            return Ok(lecterns.Select(e => e.ToLecternBody()));
+            return Ok(lecterns.Select(e => e.ToLecternBody()) ?? new List<LecternBody>());
         }
 
 

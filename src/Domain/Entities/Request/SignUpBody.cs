@@ -8,6 +8,9 @@ namespace prof_tester_api.src.Domain.Entities.Request
         [Phone]
         [Required]
         public string Phone { get; set; }
+        [Required]
+        public string Fullname { get; set; }
+        public Guid DepartmentId { get; set; }
 
         [Required]
         public string Password { get; set; }

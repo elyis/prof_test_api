@@ -27,11 +27,19 @@ namespace prof_tester_api.src.Infrastructure.Repository
                 Name = body.Name,
             };
 
+            var newDepartment = new DepartmentModel
+            {
+                Name = "Все",
+                Organization = newOrganization,
+            };
+
             var organizationAdmin = new UserModel
             {
                 Phone = body.PhoneAdmin,
                 Password = body.PasswordAdmin,
+                Fullname = "admin",
                 RoleName = Enum.GetName(UserRole.Admin)!,
+                Department = newDepartment,
                 Organization = newOrganization
             };
 

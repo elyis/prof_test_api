@@ -16,7 +16,7 @@ namespace prof_tester_api.src.Domain.Models
         public string Password { get; set; }
         public string RoleName { get; set; }
         public string? RestoreCode { get; set; }
-        public string? Fullname { get; set; }
+        public string Fullname { get; set; }
         public string? Email { get; set; }
         public DateTime? RestoreCodeValidBefore { get; set; }
         public string? Token { get; set; }
@@ -25,6 +25,10 @@ namespace prof_tester_api.src.Domain.Models
 
         public OrganizationModel Organization { get; set; }
         public Guid OrganizationId { get; set; }
+
+        public DepartmentModel? Department { get; set; }
+        public Guid? DepartmentId { get; set; }
+        public List<TestResultModel> TestResults { get; set; } = new();
 
         public ProfileBody ToProfileBody()
         {

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using prof_tester_api.src.Infrastructure.Data;
 
@@ -10,32 +11,14 @@ using prof_tester_api.src.Infrastructure.Data;
 namespace prof_tester_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231029054626_init4")]
+    partial class init4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.11");
-
-            modelBuilder.Entity("prof_tester_api.src.Domain.Models.AnswerModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("QuestionId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.ToTable("Answers");
-                });
 
             modelBuilder.Entity("prof_tester_api.src.Domain.Models.DepartmentModel", b =>
                 {
@@ -95,74 +78,6 @@ namespace prof_tester_api.Migrations
                     b.ToTable("Organizations");
                 });
 
-            modelBuilder.Entity("prof_tester_api.src.Domain.Models.QuestionModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RightAnswer")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("TestModelId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TestModelId");
-
-                    b.ToTable("Questions");
-                });
-
-            modelBuilder.Entity("prof_tester_api.src.Domain.Models.TestModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("DepartmentId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.ToTable("Tests");
-                });
-
-            modelBuilder.Entity("prof_tester_api.src.Domain.Models.TestResultModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("RightCountAnswers")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<Guid>("TestId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TestId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("TestResults");
-                });
-
             modelBuilder.Entity("prof_tester_api.src.Domain.Models.UserModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -172,7 +87,7 @@ namespace prof_tester_api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("DepartmentId")
+                    b.Property<Guid>("DepartmentId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
@@ -224,17 +139,6 @@ namespace prof_tester_api.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("prof_tester_api.src.Domain.Models.AnswerModel", b =>
-                {
-                    b.HasOne("prof_tester_api.src.Domain.Models.QuestionModel", "Question")
-                        .WithMany("Answers")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-                });
-
             modelBuilder.Entity("prof_tester_api.src.Domain.Models.DepartmentModel", b =>
                 {
                     b.HasOne("prof_tester_api.src.Domain.Models.OrganizationModel", "Organization")
@@ -257,48 +161,13 @@ namespace prof_tester_api.Migrations
                     b.Navigation("Organization");
                 });
 
-            modelBuilder.Entity("prof_tester_api.src.Domain.Models.QuestionModel", b =>
-                {
-                    b.HasOne("prof_tester_api.src.Domain.Models.TestModel", null)
-                        .WithMany("Questions")
-                        .HasForeignKey("TestModelId");
-                });
-
-            modelBuilder.Entity("prof_tester_api.src.Domain.Models.TestModel", b =>
-                {
-                    b.HasOne("prof_tester_api.src.Domain.Models.DepartmentModel", "Department")
-                        .WithMany("Tests")
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Department");
-                });
-
-            modelBuilder.Entity("prof_tester_api.src.Domain.Models.TestResultModel", b =>
-                {
-                    b.HasOne("prof_tester_api.src.Domain.Models.TestModel", "Test")
-                        .WithMany("TestResults")
-                        .HasForeignKey("TestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("prof_tester_api.src.Domain.Models.UserModel", "User")
-                        .WithMany("TestResults")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Test");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("prof_tester_api.src.Domain.Models.UserModel", b =>
                 {
                     b.HasOne("prof_tester_api.src.Domain.Models.DepartmentModel", "Department")
                         .WithMany("Employees")
-                        .HasForeignKey("DepartmentId");
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("prof_tester_api.src.Domain.Models.OrganizationModel", "Organization")
                         .WithMany("Staff")
@@ -314,8 +183,6 @@ namespace prof_tester_api.Migrations
             modelBuilder.Entity("prof_tester_api.src.Domain.Models.DepartmentModel", b =>
                 {
                     b.Navigation("Employees");
-
-                    b.Navigation("Tests");
                 });
 
             modelBuilder.Entity("prof_tester_api.src.Domain.Models.OrganizationModel", b =>
@@ -323,23 +190,6 @@ namespace prof_tester_api.Migrations
                     b.Navigation("Lecterns");
 
                     b.Navigation("Staff");
-                });
-
-            modelBuilder.Entity("prof_tester_api.src.Domain.Models.QuestionModel", b =>
-                {
-                    b.Navigation("Answers");
-                });
-
-            modelBuilder.Entity("prof_tester_api.src.Domain.Models.TestModel", b =>
-                {
-                    b.Navigation("Questions");
-
-                    b.Navigation("TestResults");
-                });
-
-            modelBuilder.Entity("prof_tester_api.src.Domain.Models.UserModel", b =>
-                {
-                    b.Navigation("TestResults");
                 });
 #pragma warning restore 612, 618
         }
