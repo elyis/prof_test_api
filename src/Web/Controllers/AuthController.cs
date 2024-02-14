@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using webApiTemplate.src.App.IService;
+using prof_tester_api.src.Domain.IRepository;
 
 namespace prof_tester_api.src.Web.Controllers
 {
@@ -14,15 +15,18 @@ namespace prof_tester_api.src.Web.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IJwtService _jwtService;
+        private readonly IUserRepository _userRepository;
 
 
         public AuthController(
             IAuthService authService,
-            IJwtService jwtService
+            IJwtService jwtService,
+            IUserRepository userRepository
         )
         {
             _authService = authService;
             _jwtService = jwtService;
+            _userRepository = userRepository;
         }
 
 
@@ -66,6 +70,20 @@ namespace prof_tester_api.src.Web.Controllers
             var result = await _authService.RestoreToken(body.Value);
             return result;
         }
+
+        [SwaggerOperation("Сбросить пароль")]
+        [SwaggerResponse(200)]
+        [HttpPost("update-password"), Authorize]
+
+        public async Task<IActionResult> UpdatePassword(
+            UpdatePasswordBody body,
+            [FromHeader(Name = "Authorization")] string token)
+        {
+            var tokenInfo = _jwtService.GetTokenPayload(token);
+            var result = await _userRepository.UpdatePassword(tokenInfo.UserId, body.Password);
+            return result == null ? BadRequest() : Ok();
+        }
+
 
     }
 }

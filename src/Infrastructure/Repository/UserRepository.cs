@@ -49,6 +49,18 @@ namespace prof_tester_api.src.Infrastructure.Repository
                 .Where(e => e.OrganizationId == organizationId && e.DepartmentId == departmentId)
                 .ToListAsync();
 
+        public async Task<UserModel?> UpdatePassword(Guid id, string password)
+        {
+            var user = await GetAsync(id);
+            if (user == null)
+                return null;
+
+            user.Password = password;
+            await _context.SaveChangesAsync();
+
+            return user;
+        }
+
         public async Task<UserModel?> GetAsync(Guid id)
             => await _context.Users
                 .FirstOrDefaultAsync(e => e.Id == id);

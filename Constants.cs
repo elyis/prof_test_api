@@ -3,7 +3,8 @@ namespace prof_tester_api
     public static class Constants
     {
         //Менять этот url в формате: "http://localhost:8080"
-        public static readonly string serverUrl = Environment.GetEnvironmentVariable("ASPNETCORE_URLS").Split(";").First();
+        // public static readonly string serverUrl = Environment.GetEnvironmentVariable("ASPNETCORE_URLS").Split(";").First();
+        public static readonly string serverUrl = "https://9251-176-28-64-201.ngrok-free.app";
 
         public static readonly string localPathToStorages = @"Resources/";
         public static readonly string localPathToProfileIcons = $"{localPathToStorages}ProfileIcons/";

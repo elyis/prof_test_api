@@ -7,6 +7,7 @@ namespace prof_tester_api.src.Domain.IRepository
     {
         Task<UserModel?> AddAsync(SignUpBody body, string role, OrganizationModel organization, DepartmentModel? department);
         Task<UserModel?> GetAsync(Guid id);
+        Task<UserModel?> UpdatePassword(Guid id, string password);
         Task<UserModel?> GetWithOrganizationAsync(Guid id);
         Task<UserModel?> GetAsync(string phone);
         Task<UserModel?> UpdateProfileAsync(Guid userId, UpdateProfileBody body);

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using prof_tester_api.src.Domain.Entities.Request;
 using prof_tester_api.src.Domain.Entities.Response;
@@ -136,6 +137,32 @@ namespace prof_tester_api.src.Web.Controllers
             .ToList();
 
             return Ok(response ?? new List<AnalyticsBody>());
+        }
+
+        [HttpGet("tests/analytic"), Authorize]
+        [SwaggerOperation("Получить аналитику по отделу пользователя отделу")]
+        [SwaggerResponse(200, Type = typeof(IEnumerable<AnalyticsBody>))]
+
+        public async Task<IActionResult> GetAnalyticsByDepartment(
+            [FromHeader(Name = "Authorization")] string token
+        )
+        {
+            var tokenInfo = _jwtService.GetTokenPayload(token);
+            var department = (await _userRepository.GetAsyncWithDepartment(tokenInfo.UserId))?.Department;
+            if (department == null)
+                return Ok(new List<AnalyticsBody>());
+
+            var results = await _userRepository.GetAllWithTestResults(tokenInfo.OrganizationId, department.Id);
+            var response = results.Select(user => new AnalyticsBody
+            {
+                Fullname = user.Fullname,
+                UserId = user.Id,
+                CountPoints = (int)user.TestResults.GroupBy(e => e.TestId).Select(e => e.Average(e => e.RightCountAnswers)).Sum()
+            })
+            .OrderByDescending(e => e.CountPoints)
+            .ToList();
+
+            return Ok(response);
         }
 
         [HttpGet("tests/analytics/")]

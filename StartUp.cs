@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using webApiTemplate.src.App.IService;
 using webApiTemplate.src.App.Service;
 using webApiTemplate.src.Domain.Entities.Config;
+using Microsoft.Extensions.FileProviders;
 
 namespace prof_tester_api
 {
@@ -127,7 +128,7 @@ namespace prof_tester_api
             });
         }
 
-        public void Configure(WebApplication app, IWebHostEnvironment env)
+        public void Configure(WebApplication app)
         {
             if (app.Environment.IsDevelopment())
             {
@@ -138,7 +139,8 @@ namespace prof_tester_api
 
             app.UseCors();
             app.UseHttpLogging();
-            app.UseRequestLocalization();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseAuthentication();
