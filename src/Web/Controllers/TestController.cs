@@ -156,7 +156,7 @@ namespace prof_tester_api.src.Web.Controllers
             {
                 Fullname = user.Fullname,
                 UserId = user.Id,
-                CountPoints = (int)user.TestResults.GroupBy(e => e.TestId).Select(e => e.Average(e => e.RightCountAnswers)).Sum()
+                CountPoints = (int)user.TestResults.GroupBy(e => e.TestId).Select(e => e.MaxBy(e => e.RightCountAnswers).RightCountAnswers).Sum()
             })
             .OrderByDescending(e => e.CountPoints)
             .ToList();
