@@ -176,12 +176,12 @@ namespace prof_tester_api.src.Web.Controllers
 
             var groupedResults = user.TestResults.GroupBy(e => e.Test.Name);
             var result = groupedResults
-
             .Select(testResult => new TestAnalyticBody
             {
+                Id = testResult.First().TestId,
                 TestName = testResult.Key,
                 AverageCountPoints = (int)testResult.Average(t => t.RightCountAnswers),
-                MaxCountPoints = testResult.First().Test.Questions.Count,
+                MaxCountPointsByTest = testResult.First().Test.Questions.Count,
                 IsCompleted = (testResult.MaxBy(e => e.RightCountAnswers)?.RightCountAnswers) / (float)testResult.First().Test.Questions.Count >= 0.6
             })
             .OrderByDescending(e => e.TestName)
@@ -202,9 +202,10 @@ namespace prof_tester_api.src.Web.Controllers
 
             var response = user.TestResults.GroupBy(e => e.Test.Name).Select(test => new TestAnalyticBody
             {
+                Id = test.First().TestId,
                 TestName = test.Key,
                 AverageCountPoints = (int)test.Average(t => t.RightCountAnswers),
-                MaxCountPoints = test.First().Test.Questions.Count,
+                MaxCountPointsByTest = test.First().Test.Questions.Count,
                 IsCompleted = test.MaxBy(e => e.RightCountAnswers)?.RightCountAnswers / (float)test.First().Test.Questions.Count >= 0.6
             });
             return Ok(response ?? new List<TestAnalyticBody>());
