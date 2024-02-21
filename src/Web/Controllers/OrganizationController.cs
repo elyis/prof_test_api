@@ -22,13 +22,14 @@ namespace prof_tester_api.src.Web.Controllers
             IUserRepository userRepository,
             IDepartmentRepository departmentRepository,
             IJwtService jwtService
-            )
+        )
         {
             _organizationRepository = organozationRepository;
             _departmentRepository = departmentRepository;
             _userRepository = userRepository;
             _jwtService = jwtService;
         }
+
 
         [HttpGet("organizations")]
         [SwaggerOperation("Получить список организаций")]

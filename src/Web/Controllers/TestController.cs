@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using prof_tester_api.src.Domain.Entities.Request;
 using prof_tester_api.src.Domain.Entities.Response;
-using prof_tester_api.src.Domain.Enums;
 using prof_tester_api.src.Domain.IRepository;
 using Swashbuckle.AspNetCore.Annotations;
 using webApiTemplate.src.App.IService;
@@ -175,16 +174,20 @@ namespace prof_tester_api.src.Web.Controllers
             var tokenPayload = _jwtService.GetTokenPayload(token);
             var user = await _userRepository.GetAsyncWithTestResults(tokenPayload.UserId);
 
-            var response = user.TestResults.GroupBy(e => e.Test.Name).Select(test => new TestAnalyticBody
+            var groupedResults = user.TestResults.GroupBy(e => e.Test.Name);
+            var result = groupedResults
+
+            .Select(testResult => new TestAnalyticBody
             {
-                TestName = test.Key,
-                CountPoints = (int)test.Average(t => t.RightCountAnswers),
-                MaxCountPoints = test.First().Test.Questions.Count
+                TestName = testResult.Key,
+                AverageCountPoints = (int)testResult.Average(t => t.RightCountAnswers),
+                MaxCountPoints = testResult.First().Test.Questions.Count,
+                IsCompleted = (testResult.MaxBy(e => e.RightCountAnswers)?.RightCountAnswers) / (float)testResult.First().Test.Questions.Count >= 0.6
             })
             .OrderByDescending(e => e.TestName)
             .ToList();
 
-            return Ok(response ?? new List<TestAnalyticBody>());
+            return Ok(result ?? new List<TestAnalyticBody>());
         }
 
         [HttpGet("tests/analytics/{userId}")]
@@ -200,8 +203,9 @@ namespace prof_tester_api.src.Web.Controllers
             var response = user.TestResults.GroupBy(e => e.Test.Name).Select(test => new TestAnalyticBody
             {
                 TestName = test.Key,
-                CountPoints = (int)test.Average(t => t.RightCountAnswers),
-                MaxCountPoints = test.First().Test.Questions.Count
+                AverageCountPoints = (int)test.Average(t => t.RightCountAnswers),
+                MaxCountPoints = test.First().Test.Questions.Count,
+                IsCompleted = test.MaxBy(e => e.RightCountAnswers)?.RightCountAnswers / (float)test.First().Test.Questions.Count >= 0.6
             });
             return Ok(response ?? new List<TestAnalyticBody>());
         }
