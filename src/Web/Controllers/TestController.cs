@@ -182,10 +182,31 @@ namespace prof_tester_api.src.Web.Controllers
                 TestName = testResult.Key,
                 AverageCountPoints = (int)testResult.Average(t => t.RightCountAnswers),
                 MaxCountPointsByTest = testResult.First().Test.Questions.Count,
+                LastCountPoints = testResult.OrderByDescending(e => e.CreatedAt).First().RightCountAnswers,
                 IsCompleted = (testResult.MaxBy(e => e.RightCountAnswers)?.RightCountAnswers) / (float)testResult.First().Test.Questions.Count >= 0.6
             })
             .OrderByDescending(e => e.TestName)
             .ToList();
+
+            if (user.DepartmentId != null)
+            {
+                var tests = await _testRepository.GetAllAsync((Guid)user.DepartmentId);
+                var testResultNames = result.Select(e => e.Id);
+                var testNames = tests.Select(e => e.Id);
+
+                var temp = testNames.Except(testResultNames);
+                var testAnalyticBodies = temp.Select(e => new TestAnalyticBody
+                {
+                    Id = e,
+                    TestName = tests.First(h => h.Id == e).Name,
+                    AverageCountPoints = 0,
+                    IsCompleted = false,
+                    LastCountPoints = 0,
+                    MaxCountPointsByTest = 0,
+                });
+
+                result.AddRange(testAnalyticBodies);
+            }
 
             return Ok(result ?? new List<TestAnalyticBody>());
         }
@@ -206,8 +227,30 @@ namespace prof_tester_api.src.Web.Controllers
                 TestName = test.Key,
                 AverageCountPoints = (int)test.Average(t => t.RightCountAnswers),
                 MaxCountPointsByTest = test.First().Test.Questions.Count,
+                LastCountPoints = test.OrderByDescending(e => e.CreatedAt).First().RightCountAnswers,
                 IsCompleted = test.MaxBy(e => e.RightCountAnswers)?.RightCountAnswers / (float)test.First().Test.Questions.Count >= 0.6
-            });
+            }).ToList();
+
+            if (user.DepartmentId != null)
+            {
+                var tests = await _testRepository.GetAllAsync((Guid)user.DepartmentId);
+                var testResultNames = response.Select(e => e.Id);
+                var testNames = tests.Select(e => e.Id);
+
+                var temp = testNames.Except(testResultNames);
+                var testAnalyticBodies = temp.Select(e => new TestAnalyticBody
+                {
+                    Id = e,
+                    TestName = tests.First(h => h.Id == e).Name,
+                    AverageCountPoints = 0,
+                    IsCompleted = false,
+                    LastCountPoints = 0,
+                    MaxCountPointsByTest = 0,
+                });
+
+                response.AddRange(testAnalyticBodies);
+            }
+
             return Ok(response ?? new List<TestAnalyticBody>());
         }
     }

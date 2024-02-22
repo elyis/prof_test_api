@@ -34,6 +34,7 @@ namespace prof_tester_api.src.Domain.Models
         {
             return new ProfileBody
             {
+                Id = Id,
                 Phone = Phone,
                 Role = Enum.Parse<UserRole>(RoleName),
                 UrlIcon = string.IsNullOrEmpty(FilenameIcon) ? null : $"{Constants.webPathToProfileIcons}{FilenameIcon}",

@@ -49,6 +49,11 @@ namespace prof_tester_api.src.Infrastructure.Repository
                 .Where(e => e.OrganizationId == organizationId && e.DepartmentId == departmentId)
                 .ToListAsync();
 
+        public async Task<IEnumerable<UserModel>> GetAll(Guid organizationId)
+        {
+            return await _context.Users.Where(e => e.OrganizationId == organizationId).ToListAsync();
+        }
+
         public async Task<UserModel?> UpdatePassword(Guid id, string password)
         {
             var user = await GetAsync(id);
@@ -59,6 +64,18 @@ namespace prof_tester_api.src.Infrastructure.Repository
             await _context.SaveChangesAsync();
 
             return user;
+        }
+
+        public async Task<bool> Remove(Guid id)
+        {
+            var user = await GetAsync(id);
+            if (user == null)
+                return true;
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<UserModel?> GetAsync(Guid id)
@@ -76,6 +93,7 @@ namespace prof_tester_api.src.Infrastructure.Repository
 
         public async Task<UserModel?> GetAsyncWithTestResults(Guid id)
             => await _context.Users
+                .Include(e => e.Department)
                 .Include(e => e.TestResults)
                     .ThenInclude(e => e.Test)
                         .ThenInclude(e => e.Questions)

@@ -9,7 +9,9 @@ namespace prof_tester_api.src.Domain.IRepository
         Task<UserModel?> GetAsync(Guid id);
         Task<UserModel?> UpdatePassword(Guid id, string password);
         Task<UserModel?> GetWithOrganizationAsync(Guid id);
+        Task<bool> Remove(Guid id);
         Task<UserModel?> GetAsync(string phone);
+        Task<IEnumerable<UserModel>> GetAll(Guid organizationId);
         Task<UserModel?> UpdateProfileAsync(Guid userId, UpdateProfileBody body);
         Task<bool> UpdateTokenAsync(string newRefreshToken, Guid id);
         Task<UserModel?> GetByTokenAsync(string refreshToken);
