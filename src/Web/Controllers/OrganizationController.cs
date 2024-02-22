@@ -74,10 +74,11 @@ namespace prof_tester_api.src.Web.Controllers
 
         [HttpGet("employers/{departmentId}")]
         [SwaggerOperation("Получить сотрудников")]
+        [SwaggerResponse(200, Type = typeof(IEnumerable<ProfileBody>))]
         public async Task<IActionResult> GetEmployers(Guid departmentId)
         {
             var response = await _departmentRepository.GetWithUsersAsync(departmentId);
-            return response == null ? NotFound() : Ok(response.Employees.Select(e => e.Fullname) ?? new List<string>());
+            return response == null ? NotFound() : Ok(response.Employees.Select(e => e.ToProfileBody()).ToList() ?? new List<ProfileBody>());
         }
     }
 }
