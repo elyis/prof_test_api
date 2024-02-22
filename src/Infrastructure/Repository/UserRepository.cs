@@ -38,12 +38,15 @@ namespace prof_tester_api.src.Infrastructure.Repository
         }
 
         public async Task<IEnumerable<UserModel>> GetAllByRoleWithTestResults(string rolename, Guid organizationId)
-            => await _context.Users.Include(e => e.TestResults)
+            => await _context.Users
+            .Include(e => e.Department)
+            .Include(e => e.TestResults)
             .Where(e => e.OrganizationId == organizationId && e.RoleName == rolename)
                 .ToListAsync();
 
         public async Task<IEnumerable<UserModel>> GetAllWithTestResults(Guid organizationId, Guid departmentId)
             => await _context.Users
+                    .Include(e => e.Department)
                 .Include(e => e.TestResults)
                     .ThenInclude(e => e.Test)
                 .Where(e => e.OrganizationId == organizationId && e.DepartmentId == departmentId)
@@ -51,7 +54,9 @@ namespace prof_tester_api.src.Infrastructure.Repository
 
         public async Task<IEnumerable<UserModel>> GetAll(Guid organizationId)
         {
-            return await _context.Users.Where(e => e.OrganizationId == organizationId).ToListAsync();
+            return await _context.Users
+            .Include(e => e.Department)
+            .Where(e => e.OrganizationId == organizationId).ToListAsync();
         }
 
         public async Task<UserModel?> UpdatePassword(Guid id, string password)
@@ -80,10 +85,12 @@ namespace prof_tester_api.src.Infrastructure.Repository
 
         public async Task<UserModel?> GetAsync(Guid id)
             => await _context.Users
+                    .Include(e => e.Department)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
         public async Task<UserModel?> GetAsync(string phone)
             => await _context.Users
+                    .Include(e => e.Department)
                 .FirstOrDefaultAsync(e => e.Phone == phone);
 
         public async Task<UserModel?> GetAsyncWithDepartment(Guid id)
@@ -101,6 +108,7 @@ namespace prof_tester_api.src.Infrastructure.Repository
 
         public async Task<UserModel?> GetByTokenAsync(string refreshToken)
             => await _context.Users
+                .Include(e => e.Department)
                 .FirstOrDefaultAsync(e => e.Token == refreshToken);
 
         public async Task<UserModel?> GetWithOrganizationAsync(Guid id)

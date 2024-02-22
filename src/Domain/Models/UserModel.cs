@@ -39,7 +39,8 @@ namespace prof_tester_api.src.Domain.Models
                 Role = Enum.Parse<UserRole>(RoleName),
                 UrlIcon = string.IsNullOrEmpty(FilenameIcon) ? null : $"{Constants.webPathToProfileIcons}{FilenameIcon}",
                 Email = Email,
-                Fullname = Fullname
+                Fullname = Fullname,
+                Department = Department?.ToDepartmentBody()
             };
         }
     }

@@ -10,5 +10,7 @@ namespace prof_tester_api.src.Domain.Entities.Response
         public string? Email { get; set; }
         public string? Fullname { get; set; }
         public string? UrlIcon { get; set; }
+
+        public DepartmentBody? Department { get; set; }
     }
 }
