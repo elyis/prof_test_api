@@ -15,13 +15,16 @@ namespace prof_tester_api.src.Web.Controllers
     public class ProfileController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
+        private readonly IDepartmentRepository _departmentRepository;
         private readonly IJwtService _jwtService;
 
         public ProfileController(
             IUserRepository userRepository,
+            IDepartmentRepository departmentRepository,
             IJwtService jwtService)
         {
             _userRepository = userRepository;
+            _departmentRepository = departmentRepository;
             _jwtService = jwtService;
         }
 
@@ -53,12 +56,17 @@ namespace prof_tester_api.src.Web.Controllers
         [HttpPut("profile/{userId}"), Authorize(Roles = "Admin")]
         [SwaggerOperation("Обновить профиль сотрудника")]
         [SwaggerResponse(200, Description = "Успешно", Type = typeof(ProfileBody))]
+        [SwaggerResponse(400)]
         [SwaggerResponse(404, Description = "Пользователь не найден")]
         public async Task<IActionResult> UpdateProfileAsync(
-            UpdateProfileBody body,
+            UpdateEmployerProfileBody body,
             [Required] Guid userId)
         {
-            var user = await _userRepository.UpdateProfileAsync(userId, body);
+            var department = await _departmentRepository.GetAsync(body.DepartmentId);
+            if (department == null)
+                return BadRequest();
+
+            var user = await _userRepository.UpdateProfileAsync(userId, body, department);
             return user == null ? NotFound() : Ok(user.ToProfileBody());
         }
 

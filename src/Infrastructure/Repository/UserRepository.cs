@@ -121,6 +121,21 @@ namespace prof_tester_api.src.Infrastructure.Repository
             return user;
         }
 
+
+        public async Task<UserModel?> UpdateProfileAsync(Guid userId, UpdateEmployerProfileBody body, DepartmentModel department)
+        {
+            var user = await GetAsync(userId);
+            if (user == null)
+                return null;
+
+            user.Fullname = body.Fullname;
+            user.Email = body.Email;
+            user.Phone = body.Phone;
+            user.Department = department;
+            await _context.SaveChangesAsync();
+            return user;
+        }
+
         public async Task<UserModel?> UpdateProfileIconAsync(Guid userId, string filename)
         {
             var user = await GetAsync(userId);

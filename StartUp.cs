@@ -7,7 +7,7 @@ using Microsoft.OpenApi.Models;
 using webApiTemplate.src.App.IService;
 using webApiTemplate.src.App.Service;
 using webApiTemplate.src.Domain.Entities.Config;
-using Microsoft.Extensions.FileProviders;
+
 
 namespace prof_tester_api
 {
