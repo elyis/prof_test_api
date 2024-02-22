@@ -39,6 +39,15 @@ namespace prof_tester_api.src.Web.Controllers
             return user == null ? NotFound() : Ok(user.ToProfileBody());
         }
 
+        [HttpGet("profile/{userId}"), Authorize]
+        [SwaggerOperation("Получить профиль")]
+        [SwaggerResponse(200, Description = "Успешно", Type = typeof(ProfileBody))]
+        public async Task<IActionResult> GetProfileAsync([Required] Guid userId)
+        {
+            var user = await _userRepository.GetAsync(userId);
+            return user == null ? NotFound() : Ok(user.ToProfileBody());
+        }
+
         [HttpGet("users"), Authorize(Roles = "Admin")]
         [SwaggerOperation("Получить всех сотрудников")]
         [SwaggerResponse(200, Description = "Успешно", Type = typeof(IEnumerable<ProfileBody>))]
