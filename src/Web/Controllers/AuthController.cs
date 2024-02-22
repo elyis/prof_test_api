@@ -127,6 +127,9 @@ namespace prof_tester_api.src.Web.Controllers
             if (user == null)
                 return NoContent();
 
+            if (user.RoleName == UserRole.Admin.ToString())
+                return BadRequest();
+
             var result = await _userRepository.Remove(userId);
             return NoContent();
         }
