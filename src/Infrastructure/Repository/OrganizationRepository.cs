@@ -29,7 +29,7 @@ namespace prof_tester_api.src.Infrastructure.Repository
 
             var newDepartment = new DepartmentModel
             {
-                Name = "Все",
+                Name = "Управляющие",
                 Organization = newOrganization,
             };
 
