@@ -9,5 +9,6 @@ namespace prof_tester_api.src.Domain.IRepository
         Task<IEnumerable<TestModel>> GetAllAsync(Guid departmentId);
         Task<TestModel?> GetAsync(Guid testId);
         Task<TestResultModel?> CreateTestResult(CreateTestResultBody body, UserModel user);
+        Task<bool> RemoveAsync(Guid id);
     }
 }

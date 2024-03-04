@@ -21,7 +21,6 @@ namespace prof_tester_api.src.Infrastructure.Repository
             if (oldUser != null)
                 return null;
 
-
             var newUser = new UserModel
             {
                 Phone = body.Phone,

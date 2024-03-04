@@ -25,7 +25,7 @@ namespace prof_tester_api.src.Infrastructure.Data
         {
             var connectionString = _config.GetConnectionString("Default");
             optionsBuilder.UseSqlite(connectionString);
-            optionsBuilder.EnableSensitiveDataLogging();
+            // optionsBuilder.EnableSensitiveDataLogging();
             base.OnConfiguring(optionsBuilder);
         }
 

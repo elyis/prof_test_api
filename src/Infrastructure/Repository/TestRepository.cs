@@ -77,6 +77,16 @@ namespace prof_tester_api.src.Infrastructure.Repository
             return result?.Entity;
         }
 
+        public async Task<bool> RemoveAsync(Guid id)
+        {
+            var test = await GetAsync(id);
+            if (test != null)
+            {
+                _context.Tests.Remove(test);
+                await _context.SaveChangesAsync();
+            }
 
+            return true;
+        }
     }
 }

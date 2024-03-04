@@ -139,8 +139,6 @@ namespace prof_tester_api
 
             app.UseCors();
             app.UseHttpLogging();
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseAuthentication();

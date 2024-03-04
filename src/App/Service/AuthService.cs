@@ -67,7 +67,7 @@ namespace prof_tester_api.src.App.Service
         {
             var admin = await _userRepository.GetWithOrganizationAsync(adminId);
 
-            var department = await _departmentRepository.GetAsync(body.DepartmentId) ?? await _departmentRepository.AddAsync("Все", admin.Organization);
+            var department = await _departmentRepository.GetAsync(body.DepartmentId) ?? await _departmentRepository.AddAsync("Управляющие", admin.Organization);
             var oldUser = await _userRepository.AddAsync(body, rolename, admin.Organization, department);
             if (oldUser == null)
                 return new ConflictResult();

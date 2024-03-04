@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using System.Net.NetworkInformation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using prof_tester_api.src.Domain.Entities.Request;
@@ -164,6 +166,16 @@ namespace prof_tester_api.src.Web.Controllers
             return Ok(response);
         }
 
+        [HttpDelete("test")]
+        [SwaggerOperation("Удалить тест")]
+        [SwaggerResponse(204)]
+
+        public async Task<IActionResult> RemoveAsync([FromQuery, Required] Guid id)
+        {
+            var result = await _testRepository.RemoveAsync(id);
+            return NoContent();
+        }
+
         [HttpGet("tests/analytics/")]
         [SwaggerOperation("Получить аналитику по тестам")]
         [SwaggerResponse(200, Type = typeof(IEnumerable<TestAnalyticBody>))]
@@ -227,7 +239,7 @@ namespace prof_tester_api.src.Web.Controllers
                 TestName = test.Key,
                 AverageCountPoints = (int)test.Average(t => t.RightCountAnswers),
                 MaxCountPointsByTest = test.First().Test.Questions.Count,
-                LastCountPoints = test.OrderByDescending(e => e.CreatedAt).First().RightCountAnswers,
+                LastCountPoints = test.MaxBy(e => e.RightCountAnswers).RightCountAnswers,
                 IsCompleted = test.MaxBy(e => e.RightCountAnswers)?.RightCountAnswers / (float)test.First().Test.Questions.Count >= 0.6
             }).ToList();
 
